@@ -64,8 +64,10 @@ function render() {
 
       const drawX = window.innerWidth / 2 + sp.x;
       const drawY = window.innerHeight / 2 + sp.y - 10;
-
-      label.style.transform = `translate(${drawX}px, ${drawY}px)`;
+      
+      label.style.left = `${drawX}px`;
+      label.style.top = `${drawY}px`;
+    //   label.style.transform = `translate(${drawX}px, ${drawY}px)`;
     }
   }
   requestAnimationFrame(render);
