@@ -37,4 +37,5 @@ body {
   font-size: 1.2rem;
   font-weight: bold;
   text-decoration: underline;
+  transition: transform 0.1s linear;
 }
