@@ -25,14 +25,15 @@ body {
 }
 
 .cursor-label {
-  position: absolute;
-  pointer-events: none;
-  white-space: nowrap;
-  font-family: serif;
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-decoration: underline;
-  transform-origin: center center;
+    will-change: transform;
+    position: absolute;
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: underline;
+    transform-origin: center center;
 }
 
 /* .cursor-label {
