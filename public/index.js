@@ -5,6 +5,8 @@ let isActive = false;
 let mySenderId = null;
 const myDeviceType = detectDeviceType();
 
+let pendingPositions = {};
+
 ws.onmessage = (event) => {
   let msg;
   try { msg = JSON.parse(event.data); } catch { return; }
@@ -37,21 +39,43 @@ ws.onmessage = (event) => {
       label.textContent = `これは誰かの${msg.device}`;
       label.style.color = "blue";
     }
-
-    const drawX = window.innerWidth / 2 + msg.x;
-    const drawY = window.innerHeight / 2 + msg.y - 10;
-    label.style.left = `${drawX}px`;
-    label.style.top = `${drawY}px`;
+    pendingPositions[msg.sender] = msg;
   }
 };
 
+// 追加: 描画ループ
+function render() {
+  for (const sender in pendingPositions) {
+    const msg = pendingPositions[sender];
+    const label = document.querySelector(`[data-sender="${msg.sender}"]`);
+    if (label) {
+      const drawX = window.innerWidth / 2 + msg.x;
+      const drawY = window.innerHeight / 2 + msg.y - 10; // 少し上にずらす
+      // transformを使うと滑らか
+      label.style.transform = `translate(${drawX}px, ${drawY}px)`;
+    }
+  }
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+
+
+// 追加: throttle用の変数と関数
+let lastSent = 0;
+function sendThrottled(type, x, y) {
+  const now = Date.now();
+  if (now - lastSent > 30) { // 30msごとに送信
+    send(type, x, y);
+    lastSent = now;
+  }
+}
 // クリック開始
 document.addEventListener('mousedown', (e) => {
   isActive = true;
   send('start', e.clientX, e.clientY);
 });
 document.addEventListener('mousemove', (e) => {
-  if (isActive) send('move', e.clientX, e.clientY);
+  if (isActive) sendThrottled('move', e.clientX, e.clientY);
 });
 document.addEventListener('mouseup', () => {
   isActive = false;
@@ -67,7 +91,7 @@ document.addEventListener('touchstart', (e) => {
 document.addEventListener('touchmove', (e) => {
   if (!isActive) return;
   const t = e.touches[0];
-  if (t) send('move', t.clientX, t.clientY);
+  if (t) sendThrottled('move', t.clientX, t.clientY);
 });
 document.addEventListener('touchend', () => {
   isActive = false;
