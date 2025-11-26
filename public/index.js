@@ -74,25 +74,6 @@ function render() {
 }
 requestAnimationFrame(render);
 
-
-// // 追加: 描画ループ
-// function render() {
-//   for (const sender in pendingPositions) {
-//     const msg = pendingPositions[sender];
-//     const label = document.querySelector(`[data-sender="${msg.sender}"]`);
-//     if (label) {
-//       const drawX = window.innerWidth / 2 + msg.x;
-//       const drawY = window.innerHeight / 2 + msg.y - 10; // 少し上にずらす
-//       // transformを使うと滑らか
-//     //   label.style.transform = `translate(${drawX}px, ${drawY}px)`
-//       label.style.transform = `translate(${drawX - label.offsetWidth/2}px, ${drawY - label.offsetHeight/2}px)`;
-//     }
-//   }
-//   requestAnimationFrame(render);
-// }
-// requestAnimationFrame(render);
-
-
 // 追加: throttle用の変数と関数
 let lastSent = 0;
 function sendThrottled(type, x, y) {
