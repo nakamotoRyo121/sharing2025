@@ -1,0 +1,23 @@
+{
+  "name": "sharing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bufferutil": "^4.0.9",
+    "express": "^5.1.0",
+    "utf-8-validate": "^6.0.5",
+    "ws": "^8.18.3"
+  }
+}
