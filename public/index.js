@@ -52,8 +52,7 @@ function render() {
       const drawX = window.innerWidth / 2 + msg.x;
       const drawY = window.innerHeight / 2 + msg.y - 10; // 少し上にずらす
       // transformを使うと滑らか
-      label.style.left = `${drawX}px`;
-      label.style.top = `${drawY}px`;
+      label.style.transform = `translate(${drawX}px, ${drawY}px)`
     }
   }
   requestAnimationFrame(render);

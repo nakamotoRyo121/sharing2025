@@ -26,16 +26,11 @@ body {
 
 .cursor-label {
   position: absolute;
-  transform: translate(-50%, -50%);
   pointer-events: none;
   white-space: nowrap;
-  max-width: 100vw;
-  max-height: 100vh;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-family: serif;
   font-size: 1.2rem;
   font-weight: bold;
   text-decoration: underline;
-  transition: transform 0.1s linear;
+  transition: transform 0.1s linear; /* transformだけをアニメーション */
 }
