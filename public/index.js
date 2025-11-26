@@ -97,7 +97,7 @@ requestAnimationFrame(render);
 let lastSent = 0;
 function sendThrottled(type, x, y) {
   const now = Date.now();
-  if (now - lastSent > 30) { // 30msごとに送信
+  if (now - lastSent > 50) { // 30msごとに送信
     send(type, x, y);
     lastSent = now;
   }
