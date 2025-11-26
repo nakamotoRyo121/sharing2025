@@ -65,7 +65,7 @@ function render() {
       const drawX = window.innerWidth / 2 + sp.x;
       const drawY = window.innerHeight / 2 + sp.y - 10;
 
-      label.style.transform = `translate(${drawX}px, ${drawY}px)`;
+      label.style.transform = `translate(${drawX - label.offsetWidth/2}px, ${drawY - label.offsetHeight/2}px)`;
     }
   }
   requestAnimationFrame(render);
