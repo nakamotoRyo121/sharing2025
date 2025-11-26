@@ -1,28 +1,58 @@
-// expressJSのリクエスト（http通信のため） + websocketのリクエスト
-const express = require('express')
-const { Server } = require('ws')
+// server.js
+const express = require('express');
+const { Server } = require('ws');
 
-// 自動にポート番号が割り振られるが割り振られなかった時の5001 + index.htmlの取得
-const PORT = process.env.PORT || 5001
-const INDEX = '/index.html'
+const PORT = process.env.PORT || 5001;
+const app = express();
+app.use(express.static(__dirname + '/public'));
+const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-// expressを使ってユーザからのリクエストをindex.htmlに接続 + リクエスト先にサーバ起動
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`))
+const wss = new Server({ server });
+let nextId = 1;
+const clients = new Map();
 
-//   httpの値をwebsocketで受け取れるようにする
-const wss = new Server({ server })
-
-// wssとして受け取ったhttpのリクエストの状態を判別
 wss.on('connection', (ws) => {
-  console.log('Client connected')
-  ws.on('close', () => console.log('Client disconnected'))
+  const senderId = String(nextId++);
+  const color = Math.floor(Math.random() * 360);
+  clients.set(ws, { senderId, color });
+
+  // 公式IDを接続直後に返す
+  ws.send(JSON.stringify({ type: 'hello', sender: senderId, color }));
+
+  ws.on('message', (raw) => {
+    let msg;
+    try { msg = JSON.parse(raw); } catch { return; }
+
+    const meta = clients.get(ws);
+    if (!meta) return;
+
+    // メッセージタイプで分岐
+    if (msg.type === 'start' || msg.type === 'move') {
+      const outgoing = {
+        type: msg.type,
+        sender: meta.senderId,
+        device: msg.device,
+        x: msg.x, y: msg.y
+      };
+      broadcast(outgoing);
+    } else if (msg.type === 'end') {
+      broadcast({ type: 'end', sender: meta.senderId });
+    }
+  });
+
+  ws.on('close', () => {
+    const meta = clients.get(ws);
+    if (meta) {
+      // 切断時にも確実に終端メッセージ
+      broadcast({ type: 'end', sender: meta.senderId });
+      clients.delete(ws);
+    }
+  });
 });
 
-// サーバ側でインターバル（ブロードキャストして状態を更新）
-setInterval(() => {
+function broadcast(obj) {
+  const payload = JSON.stringify(obj);
   wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString())
-  })
-}, 1000)
+    if (client.readyState === client.OPEN) client.send(payload);
+  });
+}
