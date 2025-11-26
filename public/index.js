@@ -43,22 +43,52 @@ ws.onmessage = (event) => {
   }
 };
 
-// 追加: 描画ループ
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+let smoothPositions = {};
+
 function render() {
   for (const sender in pendingPositions) {
     const msg = pendingPositions[sender];
     const label = document.querySelector(`[data-sender="${msg.sender}"]`);
     if (label) {
-      const drawX = window.innerWidth / 2 + msg.x;
-      const drawY = window.innerHeight / 2 + msg.y - 10; // 少し上にずらす
-      // transformを使うと滑らか
-      label.style.transform = `translate(${drawX}px, ${drawY}px)`
-    //   label.style.transform = `translate(${drawX - label.offsetWidth/2}px, ${drawY - label.offsetHeight/2}px)`;
+      if (!smoothPositions[sender]) {
+        smoothPositions[sender] = { x: msg.x, y: msg.y };
+      }
+
+      const sp = smoothPositions[sender];
+      sp.x = lerp(sp.x, msg.x, 0.3); // ←補間係数を調整
+      sp.y = lerp(sp.y, msg.y, 0.3);
+
+      const drawX = window.innerWidth / 2 + sp.x;
+      const drawY = window.innerHeight / 2 + sp.y - 10;
+
+      label.style.transform = `translate(${drawX}px, ${drawY}px)`;
     }
   }
   requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
+
+
+// // 追加: 描画ループ
+// function render() {
+//   for (const sender in pendingPositions) {
+//     const msg = pendingPositions[sender];
+//     const label = document.querySelector(`[data-sender="${msg.sender}"]`);
+//     if (label) {
+//       const drawX = window.innerWidth / 2 + msg.x;
+//       const drawY = window.innerHeight / 2 + msg.y - 10; // 少し上にずらす
+//       // transformを使うと滑らか
+//     //   label.style.transform = `translate(${drawX}px, ${drawY}px)`
+//       label.style.transform = `translate(${drawX - label.offsetWidth/2}px, ${drawY - label.offsetHeight/2}px)`;
+//     }
+//   }
+//   requestAnimationFrame(render);
+// }
+// requestAnimationFrame(render);
 
 
 // 追加: throttle用の変数と関数
