@@ -32,5 +32,16 @@ body {
   font-size: 1.2rem;
   font-weight: bold;
   text-decoration: underline;
-  /* transition: transform 0.1s linear; transformだけをアニメーション */
+  transform-origin: center center;
 }
+
+/* .cursor-label {
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: underline;
+  transition: transform 0.1s linear; transformだけをアニメーション
+} */
