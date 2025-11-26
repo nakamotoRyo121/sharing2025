@@ -35,4 +35,6 @@ body {
     text-decoration: underline;
     transform: translate(-50%, -50%);
     user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
