@@ -122,6 +122,10 @@ function send(type, x, y) {
   ws.send(JSON.stringify(msg));
 }
 
+ws.onclose = () => {
+  location.reload();
+};
+
 function detectDeviceType() {
   const ua = navigator.userAgent.toLowerCase();
   if (/mobile|iphone|ipod|android.*mobile/.test(ua)) {
